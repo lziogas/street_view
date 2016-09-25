@@ -1,0 +1,40 @@
+html {
+  height: 100%; }
+
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: #29B4B4; }
+
+header {
+  margin-left: 2%; }
+  header h1 {
+    display: inline-block; }
+  header span {
+    margin-left: 10px; }
+
+footer {
+  position: absolute;
+  bottom: 0;
+  left: 50%; }
+
+.container {
+  height: 87%;
+  width: 100%;
+  margin: auto;
+  position: relative; }
+  .container #pano {
+    height: 100%;
+    width: 100%;
+    position: absolute; }
+  .container #map {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 180px;
+    width: 150px;
+    z-index: 10; }
+    .container #map:hover {
+      height: 260px;
+      width: 260px; }

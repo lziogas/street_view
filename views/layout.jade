@@ -1,0 +1,13 @@
+doctype html
+html
+  head
+    title= title
+    meta(charser="utf-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1")
+    link(rel='stylesheet', href='../public/stylesheets/main.css')
+    script(async, defer, src='https://maps.googleapis.com/maps/api/js?key=AIzaSyDRpMleQmEz8ucYviGhO6LrqjdzxHAMrbI')
+    script(src='../public/javascripts/main.js')
+  body(onload='initialize();')
+    include header
+    block content
+    include footer
