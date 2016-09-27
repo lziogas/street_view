@@ -17,7 +17,7 @@ header {
 footer {
   position: absolute;
   bottom: 0;
-  left: 50%; }
+  left: 45%; }
 
 .container {
   height: 87%;
@@ -38,34 +38,35 @@ footer {
     .container #map:hover {
       height: 260px;
       width: 260px; }
-  .container #arrow-left {
-    position: absolute;
-    z-index: 5;
-    bottom: 45%;
-    right: 1%;
-    width: 2.4em;
-    height: 2.4em;
-    border-right: 1.2em solid black;
-    border-top: 1.2em solid black;
-    transform: rotate(45deg);
-    box-shadow: -1px -1px 10px -2px rgba(0, 0, 0, 0.5); }
-  .container #test:after {
-    content: "";
-    position: absolute;
-    width: 200px;
-    height: 200px;
-    transform: rotate(45deg);
-    /* Prefixes... */
-    top: 75px;
-    left: 25px;
-    box-shadow: 10px 0 5px -2px #888; }
-  .container #test {
-    position: absolute;
-    z-index: 5;
-    bottom: 45%;
-    right: 1%;
-    width: 0.4em;
-    height: 0.4em;
-    border-right: 0.2em solid black;
-    border-top: 0.2em solid black;
-    transform: rotate(45deg); }
+
+#arrow-right {
+  position: absolute;
+  z-index: 5;
+  bottom: 45%;
+  right: 2%;
+  width: 30px;
+  height: 30px;
+  border-right: 10px solid #ffffff;
+  border-top: 10px solid #ffffff;
+  transform: rotate(45deg);
+  box-shadow: inset 0px 3px 0px 0px #514D48, 3px 0px 0px 0px #514D48; }
+
+#arrow-right:hover {
+  border-right: 10px solid #aee8e3;
+  border-top: 10px solid #aee8e3; }
+
+#arrow-left {
+  position: absolute;
+  z-index: 5;
+  bottom: 45%;
+  left: 2%;
+  width: 30px;
+  height: 30px;
+  border-left: 10px solid #ffffff;
+  border-bottom: 10px solid #ffffff;
+  transform: rotate(45deg);
+  box-shadow: inset 3px 0px 0px 0px #514D48, 0px 3px 0px 0px #514D48; }
+
+#arrow-left:hover {
+  border-left: 10px solid #aee8e3;
+  border-bottom: 10px solid #aee8e3; }
