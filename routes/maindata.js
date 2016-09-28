@@ -2,6 +2,7 @@ var express = require('express');
 var http = require('http');
 //var request = require('request');
 var router = express.Router();
+const _ = require('underscore');
 
 const url = 'http://storage.api.dmp.trafi.com:9090/dmp/dbs';
 
@@ -25,16 +26,30 @@ router.get('/', function(req, res, next) {
 	    	});
 	    	
 	    	Promise.all(promises).then(values => {
-	    		/*var stopPromises = [];
-	    		stopPromises.push(getStops(values[0].version))*/
-				//values.forEach((obj) => stopPromises.push(getStops(obj.version)));
-
-				//Join objects in array by region 
-				Promise.all(stopPromises).then(values => {
-					console.log("Done");
-				}).catch((err) => {
-					console.log(err)
+				var regionArr = [];
+				var regions = _.countBy(values, (obj) => {
+					return obj.region;
 				});
+	    		
+	    		for (key in regions) {
+	    			var arr = values.filter((obj) => {
+	    				return obj.region == key;
+	    			});
+	    			var regionObj = {
+	    				region: key,
+	    				ids: [],
+	    				versions: []
+	    			}
+	    			arr.forEach((item) => {
+	    				if (item.version !== null) {
+	    					regionObj.ids.push(item.dbid);
+	    					regionObj.versions.push(item.version);
+	    				}	    						
+	    			});
+	    			regionArr.push(regionObj);
+	    		}
+
+	    		res.render('header', { regions: regionArr });
 	    	}).catch((err) => {
 	    		console.log(err)
 	    	});
@@ -59,8 +74,8 @@ function getNewestVersion(dbid, region) {
      			var json = JSON.parse(body.substring(1, body.length));
      			var versions = json.Versions;
      			if (versions.length > 0) {
-     				// Kuris ID teisingas???
-     				resolve({version: versions[versions.length - 1].Id, dbid: json.DbId, region: region});
+     				var sorted = _.sortBy(versions, 'Id');
+     				resolve({version: sorted[sorted.length - 1].Id, dbid: json.DbId, region: region});
      			} else {
      				resolve({version: null, dbid: json.DbId, region: region});	
      			}
