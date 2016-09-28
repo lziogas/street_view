@@ -8,16 +8,25 @@ body {
   background: #29B4B4; }
 
 header {
-  margin-left: 2%; }
+  margin-left: 2%;
+  display: flex;
+  align-items: center;
+  height: 85px; }
   header h1 {
-    display: inline-block; }
-  header span {
-    margin-left: 10px; }
+    width: 12%; }
 
 footer {
   position: absolute;
   bottom: 0;
   left: 45%; }
+
+#region-form {
+  width: 20%; }
+  #region-form label {
+    margin-left: 2%;
+    font-size: 17px; }
+  #region-form input {
+    margin-left: 2%; }
 
 .container {
   height: 87%;

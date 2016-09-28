@@ -1,16 +1,16 @@
 header
 	h1 Street Viewer
-	span
-		label city:
-		select#region
-			each item in regions
-				option(value="#{item.region}") #{item.region}
-	span
-		label stop count:
-		select#stopCount
-			- var stopCounts = [30, 40, 50, 60, 70, 80, 90, 100]
-			each count in stopCounts
-				option(value="#{count}") #{count}
-
-	button#submit Submit
+	form#region-form(name="region-stops", method="post")
+		span
+			label city:
+			select#region(name="region")
+				each item in regions
+					option(value="#{item.region}") #{item.region}
+		span
+			label stop count:
+			select#stopCount(name="stopcount")
+				- var stopCounts = [30, 40, 50, 60, 70, 80, 90, 100]
+				each count in stopCounts
+					option(value="#{count}") #{count}
+		input#submit(type="submit", value="Submit")
 			
