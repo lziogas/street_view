@@ -2,10 +2,10 @@ header
 	h1 Street Viewer
 	form#region-form(name="region-stops", method="post")
 		span
-			label city:
+			label city: 
 			select#region(name="region")
-				each item in regions
-					option(value="#{item.region}") #{item.region}
+				each region in regions
+					option(value="#{region}") #{region}
 		span
 			label stop count:
 			select#stopCount(name="stopcount")

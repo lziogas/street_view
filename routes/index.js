@@ -17,54 +17,67 @@ router.get('/', function(req, res, next) {
 	    	console.log(err)
 	    })
 	    response.on('end', function(){
-			const versions = [];
+			const allRegions = [];
 
 	    	var json = JSON.parse(body.substring(1, body.length));
-	    	var promises = [];
 	    	json.Dbs.forEach((i) => {
-	    		promises.push(getNewestVersion(i.Id, i.Region));	
+	    		allRegions.push(i.Region);	
 	    	});
-	    	
-	    	Promise.all(promises).then(values => {
-				var regionArr = [];
-				var regions = _.countBy(values, (obj) => {
-					return obj.region;
-				});
-	    		
-	    		for (key in regions) {
-	    			var arr = values.filter((obj) => {
-	    				return obj.region == key;
-	    			});
-	    			var regionObj = {
-	    				region: key,
-	    				ids: [],
-	    				versions: []
-	    			}
-	    			arr.forEach((item) => {
-	    				if (item.version !== null) {
-	    					regionObj.ids.push(item.dbid);
-	    					regionObj.versions.push(item.version);
-	    				}	    						
-	    			});
-	    			regionArr.push(regionObj);
-	    		}
-	    		res.render('index', { regions: regionArr });
-	    	}).catch((err) => {
-	    		console.log(err)
+	    	var regions = allRegions.filter((val, i, self) => {
+	    		return self.indexOf(val) === i;
 	    	});
+			res.render('index', { regions: regions});
 	    });
 	});
 	
 });
 
 router.post('/', function (req, res) {
-    console.log(req.body.region);
-    console.log(req.body.stopcount);
+	const region = req.body.region;
+	const stopcount = req.body.stopcount;
+
+	var request = http.get("http://storage.api.dmp.trafi.com:9090/dmp/dbs", (response) => {
+		var body = "";
+		
+	    response.on('data', function(chunk){
+	        body += chunk;
+	    });
+	    response.on('error', function(err) {
+	    	console.log(err)
+	    })
+	    response.on('end', function(){
+	    	var json = JSON.parse(body.substring(1, body.length));
+	    	const ids = [];
+	    	const promises = [];
+
+	    	json.Dbs.forEach((obj) => {
+	    		obj.Region == region ? ids.push(obj.Id) : "";
+	    	});
+	    	ids.forEach((i) => {
+	    		promises.push(getNewestVersion(i));	
+	    	});
+
+	    	Promise.all(promises).then(values => {
+	    		const stopPromises = [];
+				values.forEach((version) => stopPromises.push(getStops(version)));
+				Promise.all(stopPromises).then(stopArr => {
+					var stops = _.flatten(stopArr)
+					//Randomize stops send back to jade
+					
+				}).catch((err) => {
+	    			console.log(err)
+	    		});
+
+	    	}).catch((err) => {
+	    		console.log(err)
+	    	});
+	    });
+	});
 });
 
 module.exports = router;
 
-function getNewestVersion(dbid, region) {
+function getNewestVersion(dbid) {
 	return new Promise((resolve, reject) => {
 		http.get("http://storage.api.dmp.trafi.com:9090/dmp/ui/db/" + dbid +"/versions", (response) => {
 			if (response.statusCode < 200 || response.statusCode > 299) {
@@ -79,10 +92,28 @@ function getNewestVersion(dbid, region) {
      			var versions = json.Versions;
      			if (versions.length > 0) {
      				var sorted = _.sortBy(versions, 'Id');
-     				resolve({version: sorted[sorted.length - 1].Id, dbid: json.DbId, region: region});
+     				resolve(sorted[sorted.length - 1].Id);
      			} else {
-     				resolve({version: null, dbid: json.DbId, region: region});	
+     				resolve(null);	
      			}
+     		});
+		})
+	})
+}
+
+function getStops(version) {
+	return new Promise((resolve, reject) => {
+		http.get("http://storage.api.dmp.trafi.com:9090/dmp/db/version/" + version + "/stops", (response) => {
+			if (response.statusCode < 200 || response.statusCode > 299) {
+         		reject(new Error('Failed to load page, status code: ' + response.statusCode));
+       		}
+       		var body = "";
+     		response.on('data', (chunk) => {
+     			body += chunk;
+     		});
+     		response.on('end', () => {
+     			var json = JSON.parse(body.substring(1, body.length));
+     			resolve(json.Stops);
      		});
 		})
 	})
