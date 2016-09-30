@@ -4,9 +4,12 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var webpack = require('webpack');
+var webpackConfig = require('./webpack.config.js');
+
+var compiler = webpack(webpackConfig);
 
 var routes = require('./routes/index');
-var data = require('./routes/maindata');
 
 var app = express();
 
@@ -23,8 +26,14 @@ app.use(cookieParser());
 //app.use(express.static(path.join(__dirname, 'public')));
 app.use('/public', express.static(__dirname + '/public'));
 
+app.use(require("webpack-dev-middleware")(compiler, {
+    noInfo: true, publicPath: webpackConfig.output.publicPath
+}));
+
+app.use(require("webpack-hot-middleware")(compiler));
+
 app.use('/', routes);
-app.use('/data', data);
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
