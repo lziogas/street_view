@@ -62,8 +62,8 @@ router.post('/', function (req, res) {
 				values.forEach((version) => stopPromises.push(getStops(version)));
 				Promise.all(stopPromises).then(stopArr => {
 					var stops = _.flatten(stopArr)
-					//Randomize stops send back to jade
-					
+					var randomStops = shuffle(stops).splice(0, stopcount);
+					res.render('index', { stops: randomStops});
 				}).catch((err) => {
 	    			console.log(err)
 	    		});
@@ -117,4 +117,23 @@ function getStops(version) {
      		});
 		})
 	})
+}
+
+function shuffle(array) {
+  var currentIndex = array.length, temporaryValue, randomIndex;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
 }
