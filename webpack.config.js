@@ -3,15 +3,21 @@ var webpack = require('webpack');
 
 module.exports = {
   entry: [
-    'webpack-hot-middleware/client',
+    'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000',
     './index.js'
   ],
   module: {
-    loaders: [{
-      test: /\.jsx?$/,
-      exclude: /node_modules/,
-      loader: 'babel'
-    }]
+    loaders: [
+      {
+        test: /\.jsx?$/,
+        exclude: /node_modules/,
+        loaders: ['babel']
+      },
+      {
+        test: /\.scss$/,
+        loaders: [ 'style', 'css', 'sass' ]
+      }
+    ]
   },
   resolve: {
     extensions: ['', '.js', '.jsx']

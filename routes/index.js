@@ -26,7 +26,7 @@ router.get('/', function(req, res, next) {
 	    	var regions = allRegions.filter((val, i, self) => {
 	    		return self.indexOf(val) === i;
 	    	});
-			res.render('index', { regions: regions});
+			res.json({ regions: regions});
 	    });
 	});
 	

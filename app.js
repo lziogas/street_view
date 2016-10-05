@@ -9,28 +9,34 @@ var webpackConfig = require('./webpack.config.js');
 
 var compiler = webpack(webpackConfig);
 
-//var routes = require('./routes/index');
+var dataRoute = require('./routes/index');
 
 var app = express();
 
-// view engine setup
-/*app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');*/
-
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.use(require("webpack-dev-middleware")(compiler, {
+    hot: true,
+	filename: 'bundle.js',
+	publicPath: webpackConfig.output.publicPath,
+	stats: {
+	colors: true,
+	},
+	historyApiFallback: true
+}));
+
+app.use(require("webpack-hot-middleware")(compiler, {
+	log: console.log,
+	path: '/__webpack_hmr',
+	heartbeat: 10 * 1000
+}));
+
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-//app.use(express.static(path.join(__dirname, 'public')));
 app.use('/public', express.static(__dirname + '/public'));
-
-app.use(require("webpack-dev-middleware")(compiler, {
-    noInfo: true, publicPath: webpackConfig.output.publicPath
-}));
-
-app.use(require("webpack-hot-middleware")(compiler));
+app.use('/data', dataRoute);
 
 app.use('/', function (req, res) {
     res.sendFile(path.resolve('./public/index.html'));
