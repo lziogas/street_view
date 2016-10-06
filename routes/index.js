@@ -63,13 +63,15 @@ router.post('/', function (req, res) {
 				Promise.all(stopPromises).then(stopArr => {
 					var stops = _.flatten(stopArr)
 					var randomStops = shuffle(stops).splice(0, stopcount);
-					res.render('index', { stops: randomStops});
+					res.json({ stops: randomStops});
 				}).catch((err) => {
+					res.status(500);
 	    			console.log(err)
 	    		});
 
 	    	}).catch((err) => {
 	    		console.log(err)
+	    		 res.status(500);
 	    	});
 	    });
 	});

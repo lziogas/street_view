@@ -1,13 +1,33 @@
 import React, { Component } from 'react'
 import Dropdown from '../components/dropdown.js'
 
-//var regions = getRegions();
-
-
 class App extends Component {
 	constructor (props) {
 		super(props);
-		this.state = {regions : [], stopCount: []};
+		this.state = {regions : [], stopCount: [], stops: [], show: false};
+		this.handleClick = this.handleClick.bind(this);
+		this.changeStop = this.changeStop.bind(this);
+	}
+
+	handleClick() {
+		const stopCount = this.refs.stopCount.state.value;
+		const region = this.refs.region.state.value;
+
+		fetch("/data", {
+		  method: "POST",
+		  body: JSON.stringify( {stopcount: stopCount, region: region}),
+		  headers: new Headers({
+			'Content-Type': 'application/json'
+		  })
+		}).then((response) => {
+			return response.json()
+		}).then((data) => {
+		    this.setState({stops: data, show: true});
+		});
+	}
+
+	changeStop() {
+		initialize(this.state.stops.stops[0].Coordinate);
 	}
 
 	componentDidMount() {
@@ -25,8 +45,11 @@ class App extends Component {
 
 	render() {
 		return <div>
-				 <Dropdown data={this.state.stopCount} />
-				 <Dropdown data={this.state.regions} />
+				 <Dropdown ref='stopCount' data={this.state.stopCount} />
+				 <Dropdown ref='region' data={this.state.regions} />
+				 <button onClick={this.handleClick}>Submit</button>
+				 <button onClick={this.changeStop}>Prev</button>
+				 <button onClick={this.changeStop}>Next</button>
 			   </div>
 	}
 }
